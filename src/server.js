@@ -7,7 +7,7 @@ const app = express();
 const port = 3000; 
 
 const openai = new OpenAIApi(
-  new Configuration({ apiKey: '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' })
+  new Configuration({ apiKey: '' })
 );
 const tactics = ["intro", "exact", "apply", "trivial", "exfalso", "change", "by_contra", "by_cases", "cases", "split", "refl", "rw", "left", "right", "assumption"];
 app.use(express.json());

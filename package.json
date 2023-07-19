@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server",
-    "server": "nodemon server/server.cjs"
+    "server": "nodemon src/server/server.cjs",
+    "build": "NODE_ENV=production ./node_modules/.bin/webpack"
   },
   "author": "Gabriel Ebner",
   "license": "Apache-2.0",

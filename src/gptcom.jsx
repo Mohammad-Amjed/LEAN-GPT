@@ -363,6 +363,7 @@ begin
   });
   const [question, setQuestion] = useState('');
   const [update, setUpdate] = useState('');
+  const [Toggle, setToggle] = useState(false);
   const [NLproof, setNLproof] = useState(() => {
     // Check if there's a saved value in local storage, otherwise return the initial value
     return localStorage.getItem('NLproof') || `p or q implies r if and only if p implies r or  q implies r.`;
@@ -371,6 +372,7 @@ begin
   useEffect(() => {
     // Save the leanCode state to local storage whenever it changes
     localStorage.setItem('leanCode', leanCode);
+    handleOpenURL(leanCode);
   }, [leanCode]);
   useEffect(() => {
     // Save the leanCode state to local storage whenever it changes
@@ -387,21 +389,29 @@ begin
       setNLproof((prevNLproof) => prevNLproof + `\n` + update);
 
       // Call handleOpenURL whenever leanCode gets updated
-      handleOpenURL(leanCode);
+
     } catch (error) {
       console.error('Error:', error);
     }
   };
 
+  // a function that waits for the lean code to be updated and then opens the URL
+  
+
   const handleOpenURL = async (leanCode) => {
     try {
+      setToggle(true);
       const response = await axios.post('http://localhost:3000/open-url', { leanCode });
       console.log('URL opened successfully');
       const fullHttpUrl = response.data.fullHttpUrl;
 
       // Update the URL with the new fullHttpUrl
       window.location.replace(fullHttpUrl);
-      window.location.reload();
+      // history.replaceState(undefined, undefined, paramsToString(fullHttpUrl));
+      if (Toggle) {
+        window.location.reload(); // Reload the page only if Toggle is true
+      }
+      setToggle(false);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -446,16 +456,18 @@ begin
       </div>
 
       <div className="app_inputdiv">
-        <p>Enter the step</p>
+        <div className="app_inputdiv_input">
         <input
-          className="app_inputdiv_input"
+          className="app_inputdiv_input_input" placeholder="Enter the step"
           onChange={(e) => setUpdate(e.target.value)}
         />
-        <button className="app_inputdiv_button" onClick={handleUpdateAndOpenURL}>
+        <button className="app_inputdiv_input_button" onClick={handleUpdateAndOpenURL}>
           Translate
         </button>
+        </div>
+        <button id="reset" onClick={handleReset}>Reset</button>
       </div>
-      <button onClick={handleReset}>Reset</button>
+
     </div>
   );
 };
