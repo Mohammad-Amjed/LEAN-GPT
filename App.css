@@ -127,11 +127,11 @@ p {
     white-space: nowrap !important;
 }
 
-.leaneditorContainer {
+/* .leaneditorContainer {
     height: 99vh;
     display: flex;
     flex-direction: row;
-}
+} */
 .leaneditorContainerSplit{
     width:35vw;
 }
@@ -411,4 +411,10 @@ width: 90%;}
   .app_output p{
     text-align: center;
     width: 90%;
+  }
+
+  .leanFlex {
+    height: 99vh;
+    display: flex;
+    flex-direction: row;
   }

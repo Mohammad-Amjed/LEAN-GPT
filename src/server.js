@@ -7,16 +7,18 @@ const app = express();
 const port = 3000; 
 
 const openai = new OpenAIApi(
-  new Configuration({ apiKey: '' })
+  new Configuration({ apiKey: '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' })
 );
-const tactics = ["intro", "exact", "apply", "trivial", "exfalso", "change", "by_contra", "by_cases", "cases", "split", "refl", "rw", "left", "right", "assumption"];
+
+// "by_cases",
+const tactics = ["intro", "exact", "apply", "trivial", "exfalso", "change", "by_contra",  "cases", "split", "refl", "rw", "left", "right", "assumption"];
 app.use(express.json());
 app.use(cors()); // Add this line to enable CORS
 
 app.post('/update', async (req, res) => {
   const { update } = req.body;
   try {
-    const response = await generateGPT35TurboResponse(tactics, update);
+    const response = await generateStep(tactics, update);
     res.json({ leanCode: response });
   } catch (error) {
     console.error('Error:', error);
@@ -26,7 +28,8 @@ app.post('/update', async (req, res) => {
 app.post('/question', async (req, res) =>  {
   const { question } = req.body;
   try {
-    console.log(question);
+    const response = await generateQuestion(question);
+    res.json({ proquestion: response });
     ;
   } catch (error) {
     console.error('Error:', error);
@@ -42,7 +45,7 @@ app.post('/open-url', async (req, res) => {
 });
 
 
-const generateGPT35TurboResponse = async (tactics, update) => {
+const generateStep = async (tactics, update) => {
   const topic = 'LEAN 3';
   console.log(update);
   const GPT35TurboMessage = [
@@ -61,6 +64,33 @@ const generateGPT35TurboResponse = async (tactics, update) => {
     });
 
     const result = response.data.choices[0].message.content;
+    console.log(result);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const generateQuestion = async (question) => {
+  const topic = 'LEAN 3';
+  console.log(question);
+  const GPT35TurboMessage = [
+    { role: 'system', content: `You are a ${topic} developer. response format: convert the natural language question to preposetional logic format `},
+    { role: 'assistant', content: 'and , or , implies, if and only if' },
+    { role: 'user', content:   "prompt: 'not true implies false' : answer:  '¬ true → false' prompt:" + question+ "answer:"  },
+
+  ];
+
+
+
+  try {
+    const response = await openai.createChatCompletion({
+      model: 'gpt-3.5-turbo',
+      messages: GPT35TurboMessage,
+    });
+
+    const result = response.data.choices[0].message.content;
+    console.log(result);
     return result;
   } catch (error) {
     throw error;
