@@ -117,6 +117,7 @@ interface InfoViewState {
   goal?: GoalWidgetProps;
   messages: Message[];
   displayMode: DisplayMode;
+  tactics: string[];
 }
 class InfoView extends React.Component<InfoViewProps, InfoViewState> {
   private subscriptions: monaco.IDisposable[] = [];
@@ -126,6 +127,7 @@ class InfoView extends React.Component<InfoViewProps, InfoViewState> {
     this.state = {
       messages: [],
       displayMode: DisplayMode.OnlyState,
+      tactics: [],
     };
   }
   componentWillMount() {
@@ -152,6 +154,13 @@ class InfoView extends React.Component<InfoViewProps, InfoViewState> {
     this.updateMessages(nextProps);
     this.refreshGoal(nextProps);
   }
+  componentDidUpdate(prevProps: InfoViewProps, prevState: InfoViewState) {
+    // Check if the goal state has changed
+    if (this.state.goal !== prevState.goal) {
+      // Call the generateTactic function here
+      this.generateTactic();
+    }
+  }
 
   updateMessages(nextProps) {
     this.setState({
@@ -170,14 +179,49 @@ class InfoView extends React.Component<InfoViewProps, InfoViewState> {
     const position = nextProps.cursor;
     server.info(nextProps.file, position.line, position.column).then((res) => {
       this.setState({goal: res.record && { goal: res.record, position }});
-      console.log(" the res is ", res.record);
+      // console.log(" the res is ", res.record);
     });
   }
 
+  async generateTactic() {
+    const url = 'http://127.0.0.1:5000/generate_tactics';
+    const proofState = this.state.goal.goal.state;
+    const data = { proof_state: proofState };
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const responseData = await response.json();
+      const tacticCandidates = responseData.tactics;
+      const tactics = [];
+  
+      tacticCandidates.forEach(tac => {
+        console.log(tac);
+        tactics.push(tac);
+      });
+  
+      this.setState({ tactics });
+    } catch (error) {
+      console.error('Error:', error);
+      this.setState({ tactics:[] });
+    }
+  }
+  
+
   render() {
+
     const goal = (this.state.displayMode === DisplayMode.OnlyState) &&
-      this.state.goal &&
-      (<div key={'goal'}>{GoalWidget(this.state.goal)}</div>) && console.log(" goal is: ", this.state.goal.goal.state);
+      this.state.goal && (<div key={'goal'}>{GoalWidget(this.state.goal)}</div>) 
     const filteredMsgs = (this.state.displayMode === DisplayMode.AllMessage) ?
       this.state.messages :
       this.state.messages.filter(({pos_col, pos_line, end_pos_col, end_pos_line}) => {
@@ -188,10 +232,7 @@ class InfoView extends React.Component<InfoViewProps, InfoViewState> {
           (line !== pos_line || pos_col <= column) &&
           (line !== end_pos_line || end_pos_col >= column);
       });
-    const msgs = filteredMsgs.map((msg, i) =>
-      {
-        <div key={i}>{MessageWidget({msg})}</div>;
-        console.log(" messages are: ", msg); });
+    const msgs = filteredMsgs.map((msg, i) =><div key={i}>{MessageWidget({msg})}</div>);
     return (
       <div style={{overflow: 'auto', height: '100%'}}>
         <div className='infoview-buttons'>
