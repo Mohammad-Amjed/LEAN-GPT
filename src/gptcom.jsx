@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from "react-redux";
 import axios from 'axios';
 
 const Gptcom = (props) => {
@@ -23,7 +24,7 @@ const Gptcom = (props) => {
     // Check if there's a saved value in local storage, otherwise return the initial value
     return localStorage.getItem('question') || ``;
   });
-  
+  const text = useSelector((state) => state.text.value);
 
   useEffect(() => {
     // Save the leanCode state to local storage whenever it changes
@@ -134,7 +135,9 @@ const Gptcom = (props) => {
       <h2 className="app_textarea_title">Natural language Proof:</h2>
         <h3 className="app_textarea_title">Theorem: {question}</h3>
         {/* Display each line separately */}
-        {getNLproofLines()}
+        {text.map((t) => (
+        <p key={t}> {t} </p>
+      ))}
       </div>
 
       {ToggleQuestion ?  <div className="app_inputdiv">

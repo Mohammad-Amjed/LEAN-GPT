@@ -1,15 +1,20 @@
 /// <reference types="monaco-editor" />
 import { InfoRecord, LeanJsOpts, Message } from 'lean-client-js-browser';
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Gptcom from "./gptcom.jsx"
 import { createPortal, findDOMNode, render } from 'react-dom';
 import * as sp from 'react-split-pane';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { decrement, increment, incrementByAmount } from "./redux/counter.js";
 import { allMessages, checkInputCompletionChange, checkInputCompletionPosition, currentlyRunning, delayMs,
   registerLeanLanguage, server, tabHandler } from './langservice';
 import useCustomState from './useCustomState.js';
+import { createStore } from "redux";
+import rootReducer from "./redux/reducers";
+import { Provider } from "react-redux";
+import { connect } from "react-redux";
+import allActions from "./redux/actions";
 
 export const SplitPane: any = sp;
 // console.log("please do not work");
@@ -109,150 +114,137 @@ enum DisplayMode {
   AllMessage, // all messages
 }
 
-interface InfoViewProps {
-  file: string;
-  cursor?: Position;
-}
-interface InfoViewState {
-  goal?: GoalWidgetProps;
-  messages: Message[];
-  displayMode: DisplayMode;
-  tactics: string[];
-}
-class InfoView extends React.Component<InfoViewProps, InfoViewState> {
-  private subscriptions: monaco.IDisposable[] = [];
+const InfoView = ({ file, cursor }) => {
+  const [goal, setGoal] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [displayMode, setDisplayMode] = useState(DisplayMode.OnlyState);
+  const [tactics, setTactics] = useState([]);
+  const dispatch = useDispatch();
 
-  constructor(props: InfoViewProps) {
-    super(props);
-    this.state = {
-      messages: [],
-      displayMode: DisplayMode.OnlyState,
-      tactics: [],
-    };
-  }
-  componentWillMount() {
-    this.updateMessages(this.props);
-    let timer = null; // debounce
-    this.subscriptions.push(
-      server.allMessages.on((allMsgs) => {
-        if (timer) { clearTimeout(timer); }
-        timer = setTimeout(() => {
-          this.updateMessages(this.props);
-          this.refreshGoal(this.props);
-        }, 100);
-      }),
-    );
-  }
-  componentWillUnmount() {
-    for (const s of this.subscriptions) {
-      s.dispose();
-    }
-    this.subscriptions = [];
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.cursor === this.props.cursor) { return; }
-    this.updateMessages(nextProps);
-    this.refreshGoal(nextProps);
-  }
-  componentDidUpdate(prevProps: InfoViewProps, prevState: InfoViewState) {
-    // Check if the goal state has changed
-    if (this.state.goal !== prevState.goal) {
-      // Call the generateTactic function here
-      this.generateTactic();
-    }
-  }
+  useEffect(() => {
+    updateMessages();
+    const timer = setTimeout(() => {
+      updateMessages();
+      refreshGoal();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [file]);
 
-  updateMessages(nextProps) {
-    this.setState({
-      messages: allMessages.filter((v) => v.file_name === this.props.file),
+  useEffect(() => {
+    const subscription = server.allMessages.on((allMsgs) => {
+      const timer = setTimeout(() => {
+        updateMessages();
+        refreshGoal();
+      }, 100);
+      return () => clearTimeout(timer);
     });
-  }
 
-  refreshGoal(nextProps?: InfoViewProps) {
-    if (!nextProps) {
-      nextProps = this.props;
+    return () => subscription.dispose();
+  }, []);
+
+  useEffect(() => {
+    if (cursor) {
+      updateMessages();
+      refreshGoal();
     }
-    if (!nextProps.cursor) {
+  }, [cursor]);
+
+  useEffect(() => {
+    if (goal) {
+      generateTactic();
+    }
+  }, [goal]);
+
+  const updateMessages = () => {
+    setMessages(allMessages.filter((v) => v.file_name === file));
+  };
+
+  const refreshGoal = () => {
+    if (!cursor) {
       return;
     }
 
-    const position = nextProps.cursor;
-    server.info(nextProps.file, position.line, position.column).then((res) => {
-      this.setState({goal: res.record && { goal: res.record, position }});
-      // console.log(" the res is ", res.record);
+    const position = cursor;
+    server.info(file, position.line, position.column).then((res) => {
+      setGoal(res.record && { goal: res.record, position });
     });
-  }
+  };
 
-  async generateTactic() {
+  const generateTactic = async () => {
     const url = 'http://127.0.0.1:5000/generate_tactics';
-    const proofState = this.state.goal.goal.state;
+    const proofState = goal.goal.state;
     const data = { proof_state: proofState };
-    
+
     try {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
-  
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-  
+
       const responseData = await response.json();
       const tacticCandidates = responseData.tactics;
-      const tactics = [];
-  
-      tacticCandidates.forEach(tac => {
-        console.log(tac);
-        tactics.push(tac);
-      });
-  
-      this.setState({ tactics });
+      setTactics(tacticCandidates);
+      dispatch(allActions.textAction.clearText());
+      dispatch(allActions.textAction.setText([tacticCandidates]));
+      console.log(tacticCandidates);
     } catch (error) {
       console.error('Error:', error);
-      this.setState({ tactics:[] });
+      setTactics([]);
     }
-  }
-  
+  };
 
-  render() {
-
-    const goal = (this.state.displayMode === DisplayMode.OnlyState) &&
-      this.state.goal && (<div key={'goal'}>{GoalWidget(this.state.goal)}</div>) 
-    const filteredMsgs = (this.state.displayMode === DisplayMode.AllMessage) ?
-      this.state.messages :
-      this.state.messages.filter(({pos_col, pos_line, end_pos_col, end_pos_line}) => {
-        if (!this.props.cursor) { return false; }
-        const {line, column} = this.props.cursor;
-        return pos_line <= line &&
-          ((!end_pos_line && line === pos_line) || line <= end_pos_line) &&
+  const filteredMsgs = displayMode === DisplayMode.AllMessage
+    ? messages
+    : messages.filter(({ pos_col, pos_line, end_pos_col, end_pos_line }) => {
+        if (!cursor) {
+          return false;
+        }
+        const { line, column } = cursor;
+        return (
+          pos_line <= line &&
+          (!end_pos_line || line === pos_line || line <= end_pos_line) &&
           (line !== pos_line || pos_col <= column) &&
-          (line !== end_pos_line || end_pos_col >= column);
+          (line !== end_pos_line || end_pos_col >= column)
+        );
       });
-    const msgs = filteredMsgs.map((msg, i) =><div key={i}>{MessageWidget({msg})}</div>);
-    return (
-      <div style={{overflow: 'auto', height: '100%'}}>
-        <div className='infoview-buttons'>
-          <img src='./display-goal-light.svg' title='Display Goal'
-            style={{opacity: (this.state.displayMode === DisplayMode.OnlyState ? 1 : 0.25)}}
-            onClick={() => {
-              this.setState({ displayMode: DisplayMode.OnlyState });
-            }}/>
-          <img src='./display-list-light.svg' title='Display Messages'
-            style={{opacity: (this.state.displayMode === DisplayMode.AllMessage ? 1 : 0.25)}}
-            onClick={() => {
-              this.setState({ displayMode: DisplayMode.AllMessage });
-            }}/>
-        </div>
-        {goal}
-        {msgs}
+
+  return (
+    <div style={{ overflow: 'auto', height: '100%' }}>
+      <div className='infoview-buttons'>
+        <img
+          src='./display-goal-light.svg'
+          title='Display Goal'
+          style={{ opacity: displayMode === DisplayMode.OnlyState ? 1 : 0.25 }}
+          onClick={() => {
+            setDisplayMode(DisplayMode.OnlyState);
+          }}
+        />
+        <img
+          src='./display-list-light.svg'
+          title='Display Messages'
+          style={{ opacity: displayMode === DisplayMode.AllMessage ? 1 : 0.25 }}
+          onClick={() => {
+            setDisplayMode(DisplayMode.AllMessage);
+          }}
+        />
       </div>
-    );
-  }
-}
+      {displayMode === DisplayMode.OnlyState && goal && (
+        <div key={'goal'}>{GoalWidget(goal)}</div>
+      )}
+      {filteredMsgs.map((msg, i) => (
+        <div key={i}>{MessageWidget({ msg })}</div>
+      ))}
+    </div>
+  );
+};
+
 
 interface PageHeaderProps {
   file: string;
@@ -789,7 +781,7 @@ class LeanEditor extends React.Component<LeanEditorProps, LeanEditorState> {
         onDragFinished={this.dragFinished}>
           <div ref='monaco' className='monacoContainer'/>
           <div className='infoContainer' style={infoStyle}>
-            <InfoView file={this.props.file} cursor={this.state.cursor}/>
+            <InfoView  file={this.props.file} cursor={this.state.cursor}/>
           </div>
         </SplitPane>
       </div>
@@ -919,10 +911,13 @@ const metaPromise = fetch(leanJsOpts.libraryMeta)
   .then((j) => info = j);
 
 // tslint:disable-next-line:no-var-requires
+const store = createStore(rootReducer);
 (window as any).require(['vs/editor/editor.main'], () => {
   registerLeanLanguage(leanJsOpts);
   render(
-      <App />,
+    <Provider store={store}>
+      <App />
+    </Provider>,
       document.getElementById('root'),
   );
 });
