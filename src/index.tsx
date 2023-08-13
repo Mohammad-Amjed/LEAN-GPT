@@ -6,7 +6,6 @@ import Gptcom from "./gptcom.jsx"
 import { createPortal, findDOMNode, render } from 'react-dom';
 import * as sp from 'react-split-pane';
 import { useSelector, useDispatch } from "react-redux";
-import { decrement, increment, incrementByAmount } from "./redux/counter.js";
 import { allMessages, checkInputCompletionChange, checkInputCompletionPosition, currentlyRunning, delayMs,
   registerLeanLanguage, server, tabHandler } from './langservice';
 import useCustomState from './useCustomState.js';
@@ -15,6 +14,7 @@ import rootReducer from "./redux/reducers";
 import { Provider } from "react-redux";
 import { connect } from "react-redux";
 import allActions from "./redux/actions";
+import TacGen from './TacGen.jsx';
 
 export const SplitPane: any = sp;
 // console.log("please do not work");
@@ -877,6 +877,7 @@ function App() {
   return (
     <div className="leanFlex">
       <div className="GPTcontainer">
+        <TacGen />
         <Gptcom onGptcomInfo={handleGptcomInfo} />
       </div>
       <LeanEditor

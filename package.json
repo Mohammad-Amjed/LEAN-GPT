@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server",
-    "server": "nodemon src/server/server.cjs",
+    "serverjs": "nodemon src/server/server.cjs",
+    "serverpy": "gunicorn -b 127.0.0.1:5000 src.server:app",
     "build": "NODE_ENV=production ./node_modules/.bin/webpack"
   },
   "author": "Gabriel Ebner",

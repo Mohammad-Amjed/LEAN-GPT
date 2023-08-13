@@ -135,7 +135,7 @@ const Gptcom = (props) => {
       <h2 className="app_textarea_title">Natural language Proof:</h2>
         <h3 className="app_textarea_title">Theorem: {question}</h3>
         {/* Display each line separately */}
-        {text.map((t) => (
+        {text[0] && text[0].map((t) => (
         <p key={t}> {t} </p>
       ))}
       </div>
