@@ -11,6 +11,7 @@ import { allMessages, checkInputCompletionChange, checkInputCompletionPosition, 
 import useCustomState from './useCustomState.js';
 import { createStore } from "redux";
 import rootReducer from "./redux/reducers";
+import { RootState } from "./redux/types/types.js"
 import { Provider } from "react-redux";
 import { connect } from "react-redux";
 import allActions from "./redux/actions";
@@ -120,7 +121,7 @@ const InfoView = ({ file, cursor }) => {
   const [displayMode, setDisplayMode] = useState(DisplayMode.OnlyState);
   const [tactics, setTactics] = useState([]);
   const dispatch = useDispatch();
-
+  const isPredicting = useSelector((state: RootState) => state.bool.value);
   useEffect(() => {
     updateMessages();
     const timer = setTimeout(() => {
@@ -150,10 +151,11 @@ const InfoView = ({ file, cursor }) => {
   }, [cursor]);
 
   useEffect(() => {
-    if (goal) {
-      generateTactic();
+    console.log(isPredicting);
+    if (goal && isPredicting) {
+      generateTactic().then(()=>{dispatch(allActions.updateTacticPrediction(false)); });
     }
-  }, [goal]);
+  }, [goal, isPredicting]);
 
   const updateMessages = () => {
     setMessages(allMessages.filter((v) => v.file_name === file));

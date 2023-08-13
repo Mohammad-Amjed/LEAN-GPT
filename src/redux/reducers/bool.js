@@ -1,4 +1,4 @@
-const bool = (state = { value: bool }, action) => {
+const bool = (state = { value: false }, action) => {
   switch (action.type) {
     case "UPDATE_TACTIC_PREDICTION":
       return {

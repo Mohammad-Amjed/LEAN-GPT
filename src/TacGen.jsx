@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTacticPrediction } from './redux/actions'; // Import your action creator
+import allActions from "./redux/actions";
 
 const TacGen = () => {
   const [showTactic, setShowTactic] = useState(false);
@@ -9,7 +10,7 @@ const TacGen = () => {
 
   const handleClick = () => {
     setShowTactic(true);
-    dispatch(updateTacticPrediction(true)); // Dispatch the action to update Redux state
+    dispatch(allActions.updateTacticPrediction(true)); // Dispat
   };
 
   return (

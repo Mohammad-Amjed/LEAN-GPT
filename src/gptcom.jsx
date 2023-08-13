@@ -25,6 +25,7 @@ const Gptcom = (props) => {
     return localStorage.getItem('question') || ``;
   });
   const text = useSelector((state) => state.text.value);
+  const isPredicting = useSelector((state) => state.bool.value)
 
   useEffect(() => {
     // Save the leanCode state to local storage whenever it changes
