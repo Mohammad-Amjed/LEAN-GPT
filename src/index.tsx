@@ -195,7 +195,6 @@ const InfoView = ({ file, cursor }) => {
       setTactics(tacticCandidates);
       dispatch(allActions.textAction.clearText());
       dispatch(allActions.textAction.setText([tacticCandidates]));
-      console.log(tacticCandidates);
     } catch (error) {
       console.error('Error:', error);
       setTactics([]);

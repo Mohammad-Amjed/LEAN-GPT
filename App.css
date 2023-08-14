@@ -1,5 +1,6 @@
 body {
     margin: 0;
+    font-family: sans-serif;;
 }
 p {
     font-size: 10px !important;
@@ -418,3 +419,76 @@ width: 90%;}
     display: flex;
     flex-direction: row;
   }
+  
+
+  /* Style for the whole page (assuming the body or a container element) */
+
+  
+  /* Style for the TacGen component container */
+  .tacGen {
+    height: 50vh;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); 
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* Style for the 'Generate a Tactic' button */
+  .tacGen button {
+    margin-bottom: 10px;
+    padding: 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* Style for tactic list and tactic items */
+  .tacGen_tactics {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .tacGen_tactics_tactic {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+  }
+  
+  .tacGen_tactics_tactic_span {
+    font-weight: bold;
+  }
+  
+  /* .tacGen_tactics_tactic_button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+  } */
+  
+  .tacGen button:hover {
+    background-color: #0056b3;
+  }
+  
+/* Add these styles to your CSS */
+
+.loading-spinner {
+    display: flex;
+    padding-top: 100px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .loading-text {
+    margin-top: 20px; /* Add spacing above the text */
+    font-size: 24px; /* Adjust the font size */
+  }
+  
