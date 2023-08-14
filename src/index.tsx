@@ -117,6 +117,7 @@ enum DisplayMode {
 
 const InfoView = ({ file, cursor }) => {
   const [goal, setGoal] = useState(null);
+  const [res, setRes] = useState(null);
   const [messages, setMessages] = useState([]);
   const [displayMode, setDisplayMode] = useState(DisplayMode.OnlyState);
   const [tactics, setTactics] = useState([]);
@@ -194,7 +195,7 @@ const InfoView = ({ file, cursor }) => {
       const tacticCandidates = responseData.tactics;
       setTactics(tacticCandidates);
       dispatch(allActions.textAction.clearText());
-      dispatch(allActions.textAction.setText([tacticCandidates]));
+      dispatch(allActions.textAction.setText([tacticCandidates,proofState,cursor.line]));
     } catch (error) {
       console.error('Error:', error);
       setTactics([]);
@@ -879,7 +880,6 @@ function App() {
     <div className="leanFlex">
       <div className="GPTcontainer">
         <TacGen />
-        <Gptcom onGptcomInfo={handleGptcomInfo} />
       </div>
       <LeanEditor
         file={fn}

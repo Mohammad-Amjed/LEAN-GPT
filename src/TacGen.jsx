@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTacticPrediction } from './redux/actions'; // Import your action creator
 import allActions from "./redux/actions";
@@ -18,10 +18,12 @@ const TacGen = () => {
 const handleExplain = (t) => {
   // GPT function
 }
+
+useEffect(()=> {console.log(text)},[text])
   return (
     <div className='tacGen'>
         <div>
-        <h2>Generate a Tactic</h2>
+        <h1>Generate a Tactic</h1>
       {showTactic && (
         <div>
     
@@ -31,6 +33,8 @@ const handleExplain = (t) => {
               <p className='loading-text'>Predicting Tactics...</p>
             </div>
           ) : (
+          <div>
+              <h3>the goal at line: {text[0][2]} is: {text[0][1]}</h3>
             <ol className='tacGen_tactics'>
               {text[0][0].map((t) => (
                 <li className='tacGen_tactics_tactic' key={t}>
@@ -39,6 +43,7 @@ const handleExplain = (t) => {
                 </li>
               ))}
             </ol>
+            </div>
           )}
         </div>
       )}
