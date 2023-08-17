@@ -7,7 +7,7 @@ const app = express();
 const port = 3000; 
 
 const openai = new OpenAIApi(
-  new Configuration({ apiKey: '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' })
+  new Configuration({ apiKey: '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' })
 );
 
 // "by_cases",
@@ -26,23 +26,23 @@ app.post('/update', async (req, res) => {
   }
 });
 app.post('/question', async (req, res) =>  {
-  const { question } = req.body;
+  const { goal, tactic } = req.body;
   try {
-    const response = await generateQuestion(question);
-    res.json({ proquestion: response });
+    const response = await generateQuestion(goal,tactic);
+    res.json({ explanation: response });
     ;
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'An error occurred' });
   }
 });
-app.post('/open-url', async (req, res) => {
-  const { leanCode } = req.body;
-  const fullHttpUrl = convertLeanToHttp(leanCode + " \nend");
-  console.log(fullHttpUrl); // Log the fullHttpUrl value
+// app.post('/open-url', async (req, res) => {
+//   const { leanCode } = req.body;
+//   const fullHttpUrl = convertLeanToHttp(leanCode + " \nend");
+//   console.log(fullHttpUrl); // Log the fullHttpUrl value
 
-  res.json({ fullHttpUrl }); // Return the fullHttpUrl in the response
-});
+//   res.json({ fullHttpUrl }); // Return the fullHttpUrl in the response
+// });
 
 
 const generateStep = async (tactics, update) => {
@@ -71,13 +71,12 @@ const generateStep = async (tactics, update) => {
   }
 };
 
-const generateQuestion = async (question) => {
+const generateQuestion = async (goal, tactic) => {
   const topic = 'LEAN 3';
-  console.log(question);
   const GPT35TurboMessage = [
-    { role: 'system', content: `You are a ${topic} developer. response format: convert the natural language question to preposetional logic format `},
-    { role: 'assistant', content: 'and , or , implies, if and only if' },
-    { role: 'user', content:   "prompt: 'not true implies false' : answer:  '¬ true → false' prompt:" + question+ "answer:"  },
+    { role: 'system', content: `You are a ${topic} developer. INPUT: you will receive a LEAN3 goal  of the proof and a possible tactic. OUTPUT: you will explain if the provided tactic is helpful for the first goal if yes say how if no say why. `},
+    { role: 'assistant', content: '' },
+    { role: 'user', content:   "prompt: is this LEAN 3 tactic " + tactic+ "usefull in the context of the forst goal from:" + goal   },
 
   ];
 
@@ -93,7 +92,13 @@ const generateQuestion = async (question) => {
     console.log(result);
     return result;
   } catch (error) {
-    throw error;
+    if (error.response && error.response.status === 429) {
+      const retryAfter = error.response.headers['retry-after'];
+      console.log(`Rate limited. Retry after ${retryAfter} seconds.`);
+      // Implement your retry logic here using setTimeout or similar.
+    } else {
+      throw error;
+    }
   }
 };
 

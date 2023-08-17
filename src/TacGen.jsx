@@ -3,9 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateTacticPrediction } from './redux/actions'; // Import your action creator
 import allActions from "./redux/actions";
 import { CircularProgress } from '@mui/material';
+import axios from 'axios';
+import Gptcom from './gptcom.jsx';
 
 const TacGen = () => {
   const [showTactic, setShowTactic] = useState(false);
+  const [Explanation, setExplanation] = useState("GPT explanation will appear here")
   const dispatch = useDispatch();
   const text = useSelector((state) => state.text.value);
 
@@ -15,18 +18,27 @@ const TacGen = () => {
     dispatch(allActions.updateTacticPrediction(true));
     console.log(text)
   };
-const handleExplain = (t) => {
-  // GPT function
+
+const handleExplain = async (t) => {
+  try {
+    setExplanation("Loading...")
+    const response = await axios.post('http://localhost:3000/question', { tactic: t, goal: text[0][1] });
+    setExplanation(() =>  response.data.explanation );
+    
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
 useEffect(()=> {console.log(text)},[text])
   return (
+    <>
     <div className='tacGen'>
         <div>
         <h1>Generate a Tactic</h1>
       {showTactic && (
         <div>
-    
+  
           {text.length === 0 ? (
             <div className='loading-spinner'>
               <CircularProgress />
@@ -50,6 +62,8 @@ useEffect(()=> {console.log(text)},[text])
       </div>
        <button className='tacGen_submit' onClick={handleClick}>Click to Generate a Tactic</button>
     </div>
+    <Gptcom explanation={Explanation} />
+    </>
   );
 };
 

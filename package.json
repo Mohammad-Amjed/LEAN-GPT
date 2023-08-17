@@ -26,6 +26,8 @@
     "chrome-remote-interface": "^0.32.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "firebase": "^10.1.0",
+    "firebase-tools": "^12.4.8",
     "lean-client-js-browser": "^3.5.1",
     "monaco-editor": "0.10.1",
     "ngrok": "^5.0.0-beta.2",

@@ -129,44 +129,42 @@ const Gptcom = (props) => {
 
   return (
     <div className="app">
-      {/* Input for question (if needed) */}
-      {/* ... (you can uncomment this section if you need to handle a question input) */}
-
-      <div className="app_textarea">
-      <h2 className="app_textarea_title">Natural language Proof:</h2>
-        <h3 className="app_textarea_title">Theorem: {question}</h3>
-        {/* Display each line separately */}
-        {text[0] && text[0].map((t) => (
-        <p key={t}> {t} </p>
-      ))}
-      </div>
-
-      {ToggleQuestion ?  <div className="app_inputdiv">
-        <div className="app_inputdiv_input">
-        <input
-          className="app_inputdiv_input_input" placeholder="Enter the step"
-          onChange={(e) => setUpdate(e.target.value)}
-        />
-        <button className="app_inputdiv_input_button" onClick={handleUpdateAndOpenURL}>
-          Translate
-        </button>
-        </div>
-        <button id="reset" onClick={handleClick}>Reset</button>
-      </div> : <div className="app_inputdiv">
-        <div className="app_inputdiv_input">
-        <input
-          className="app_inputdiv_input_input" placeholder="Enter the Question"
-          onChange={(e) => setQuestion(e.target.value)}
-        />
-        <button className="app_inputdiv_input_button" onClick={handleQuestion}>
-          question
-        </button>
-        </div>
-        <button id="reset" onClick={handleClick}>Reset</button>
-      </div>}
-
+          <h1>GPT Explaination</h1>
+          <p>{props.explanation ? props.explanation : "GPT explanation will appear here" }</p>
     </div>
   );
 };
 
 export default Gptcom;
+
+
+
+{/* <div className="app_textarea">
+<h2 className="app_textarea_title">Natural language Proof:</h2>
+  <h3 className="app_textarea_title">Theorem: {question}</h3>
+
+</div> */}
+
+// {ToggleQuestion ?  <div className="app_inputdiv">
+//   <div className="app_inputdiv_input">
+//   <input
+//     className="app_inputdiv_input_input" placeholder="Enter the step"
+//     onChange={(e) => setUpdate(e.target.value)}
+//   />
+//   <button className="app_inputdiv_input_button" onClick={handleUpdateAndOpenURL}>
+//     Translate
+//   </button>
+//   </div>
+//   <button id="reset" onClick={handleClick}>Reset</button>
+// </div> : <div className="app_inputdiv">
+//   <div className="app_inputdiv_input">
+//   <input
+//     className="app_inputdiv_input_input" placeholder="Enter the Question"
+//     onChange={(e) => setQuestion(e.target.value)}
+//   />
+//   <button className="app_inputdiv_input_button" onClick={handleQuestion}>
+//     question
+//   </button>
+//   </div>
+//   <button id="reset" onClick={handleClick}>Reset</button>
+// </div>}
