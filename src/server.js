@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config();
 const { Configuration, OpenAIApi } = require('openai');
 const CDP = require('chrome-remote-interface');
 

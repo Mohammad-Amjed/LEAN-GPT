@@ -8,6 +8,7 @@ import Gptcom from './gptcom.jsx';
 
 const TacGen = () => {
   const [showTactic, setShowTactic] = useState(false);
+  const [Tactic, setTactic] = useState(undefined)
   const [Explanation, setExplanation] = useState("GPT explanation will appear here")
   const dispatch = useDispatch();
   const text = useSelector((state) => state.text.value);
@@ -22,6 +23,7 @@ const TacGen = () => {
 const handleExplain = async (t) => {
   try {
     setExplanation("Loading...")
+    setTactic(t)
     const response = await axios.post('http://localhost:3000/question', { tactic: t, goal: text[0][1] });
     setExplanation(() =>  response.data.explanation );
     
@@ -60,7 +62,10 @@ useEffect(()=> {console.log(text)},[text])
         </div>
       )}
       </div>
-       <button className='tacGen_submit' onClick={handleClick}>Click to Generate a Tactic</button>
+      <div className='tacGen_submit'>
+       <button className='tacGen_submit__gen' onClick={handleClick}>Click to Generate a Tactic</button>
+       {Tactic && <button className='tacGen_submit__regen' onClick={()=>handleExplain(Tactic)}>Regenerate</button>}
+       </div>
     </div>
     <Gptcom explanation={Explanation} />
     </>

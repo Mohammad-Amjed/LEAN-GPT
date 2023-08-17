@@ -129,7 +129,7 @@ const Gptcom = (props) => {
 
   return (
     <div className="app">
-          <h1>GPT Explaination</h1>
+          <h1>GPT Explanation</h1>
           <p>{props.explanation ? props.explanation : "GPT explanation will appear here" }</p>
     </div>
   );
