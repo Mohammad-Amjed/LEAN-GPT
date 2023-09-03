@@ -174,7 +174,7 @@ const InfoView = ({ file, cursor }) => {
   };
 
   const generateTactic = async () => {
-    const url = 'http://127.0.0.1:5000/generate_tactics';
+    const url = 'http://127.0.0.1:3000/api/generate_tactics';
     const proofState = goal.goal.state;
     const data = { proof_state: proofState };
 

@@ -24,7 +24,7 @@ const handleExplain = async (t) => {
   try {
     setExplanation("Loading...")
     setTactic(t)
-    const response = await axios.post('http://localhost:3000/question', { tactic: t, goal: text[0][1] });
+    const response = await axios.post('http://localhost:3000/api/question', { tactic: t, goal: text[0][1] });
     setExplanation(() =>  response.data.explanation );
     
   } catch (error) {
