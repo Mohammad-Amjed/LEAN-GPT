@@ -53,7 +53,7 @@ useEffect(()=> {console.log(text)},[text])
               {text[0][0].map((t) => (
                 <li className='tacGen_tactics_tactic' key={t}>
                   <span classNane="tacGen_tactics_tactic_span">{t}</span>
-                  <button className="tacGen_tactics_tactic_button" onClick={()=>handleExplain(t)}> Explain</button>
+                  <button className="tacGen_tactics_tactic_button explain" onClick={()=>handleExplain(t)}> Explain</button>
                 </li>
               ))}
             </ol>
