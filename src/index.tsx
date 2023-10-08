@@ -16,6 +16,7 @@ import { Provider } from "react-redux";
 import { connect } from "react-redux";
 import allActions from "./redux/actions";
 import TacGen from './TacGen.jsx';
+import Nav from "./Nav.jsx"
 
 export const SplitPane: any = sp;
 // console.log("please do not work");
@@ -918,6 +919,7 @@ const store = createStore(rootReducer);
   registerLeanLanguage(leanJsOpts);
   render(
     <Provider store={store}>
+      <Nav />
       <App />
     </Provider>,
       document.getElementById('root'),

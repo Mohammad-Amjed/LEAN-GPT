@@ -63,7 +63,7 @@ useEffect(()=> {console.log(text)},[text])
       )}
       </div>
       <div className='tacGen_submit'>
-       <button className='tacGen_submit__gen' onClick={handleClick}>Click to Generate a Tactic</button>
+       <button className='tacGen_submit__gen' onClick={handleClick}>Predict Tactics</button>
        {Tactic && <button className='tacGen_submit__regen' onClick={()=>handleExplain(Tactic)}>Regenerate</button>}
        </div>
     </div>
