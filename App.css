@@ -28,6 +28,7 @@ body {
 }
 .GPTcontainer {
     width:65vw;
+    height: 100%;
 }
 .modalButton {
     padding: .1em .5em;
@@ -168,7 +169,7 @@ body {
     position: relative;
     border-top: 1.5px dotted rgb(93, 101, 116);
     width:100%;
-    height: 100vh;;
+    height: 100%;
 }
 
 .monacoContainer {
@@ -423,7 +424,7 @@ width: 90%;}
   }
 
   .leanFlex {
-    height: 99vh;
+    height: 90vh;
     display: flex;
     flex-direction: row;
   }
@@ -434,9 +435,8 @@ width: 90%;}
   
   /* Style for the TacGen component container */
   .tacGen {
-    height: 52vh;
+    height: calc(100% - 30px);
     background-color: #f8f8f8;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); 
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -513,6 +513,7 @@ nav {
     justify-content: space-between;
     background-color: #333;
     padding: 0.2rem 2rem;
+    height:7vh;
   }
   
   /* Styling for the logo */

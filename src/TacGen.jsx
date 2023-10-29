@@ -5,11 +5,32 @@ import allActions from "./redux/actions";
 import { CircularProgress } from '@mui/material';
 import axios from 'axios';
 import Gptcom from './gptcom.jsx';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const TacGen = () => {
   const [showTactic, setShowTactic] = useState(false);
-  const [Tactic, setTactic] = useState(undefined)
-  const [Explanation, setExplanation] = useState("GPT explanation will appear here")
+  const [Tactic, setTactic] = useState(undefined);
+  const [Explanation, setExplanation] = useState("Explanation is Loading ...");
+  const [isModal, setModal] = useState(false);
+
+  const handleOpenModal = (t) => setModal(true);
+  const handleCloseModal = () => setModal(false);
   const dispatch = useDispatch();
   const text = useSelector((state) => state.text.value);
 
@@ -37,7 +58,7 @@ useEffect(()=> {console.log(text)},[text])
     <>
     <div className='tacGen'>
         <div>
-        <h1>Generate a Tactic</h1>
+        <h1>Predict Tactics</h1>
       {showTactic && (
         <div>
   
@@ -48,12 +69,12 @@ useEffect(()=> {console.log(text)},[text])
             </div>
           ) : (
           <div>
-              <h3>the goal at line: {text[0][2]} is: {text[0][1]}</h3>
+              <h3>The goal at line: {text[0][2]} is: {text[0][1]}</h3>
             <ol className='tacGen_tactics'>
               {text[0][0].map((t) => (
                 <li className='tacGen_tactics_tactic' key={t}>
                   <span classNane="tacGen_tactics_tactic_span">{t}</span>
-                  <button className="tacGen_tactics_tactic_button explain" onClick={()=>handleExplain(t)}> Explain</button>
+                  <button className="tacGen_tactics_tactic_button explain" onClick={()=>handleOpenModal(t)}> Explain</button>
                 </li>
               ))}
             </ol>
@@ -64,10 +85,27 @@ useEffect(()=> {console.log(text)},[text])
       </div>
       <div className='tacGen_submit'>
        <button className='tacGen_submit__gen' onClick={handleClick}>Predict Tactics</button>
-       {Tactic && <button className='tacGen_submit__regen' onClick={()=>handleExplain(Tactic)}>Regenerate</button>}
+       {/* {Tactic && <button className='tacGen_submit__regen' onClick={()=>handleExplain(Tactic)}>Regenerate</button>} */}
        </div>
     </div>
-    <Gptcom explanation={Explanation} />
+    {/* <Gptcom explanation={Explanation} /> */}
+
+          {/* Explain Modal */}
+          <Modal
+        open={isModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-Explain-title"
+        aria-describedby="modal-Explain-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-Explain-title" variant="h6" component="h2">
+            GPT Explanation
+          </Typography>
+          <Typography id="modal-Explain-description" sx={{ mt: 2 }}>
+            {Explanation ? Explanation : "Explanation is Loading ..." }
+          </Typography>
+        </Box>
+      </Modal>
     </>
   );
 };
