@@ -29,7 +29,9 @@ const TacGen = () => {
   const [Explanation, setExplanation] = useState("Explanation is Loading ...");
   const [isModal, setModal] = useState(false);
 
-  const handleOpenModal = (t) => setModal(true);
+  const handleOpenModal = (t) => {
+    handleExplain(t);
+    setModal(true)};
   const handleCloseModal = () => setModal(false);
   const dispatch = useDispatch();
   const text = useSelector((state) => state.text.value);

@@ -72,6 +72,9 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
+.MuiBox-root li {
+    width: 25%;
+}
 @media screen and (min-width: 500px) {
     .c-modal {
         left: 50%;
