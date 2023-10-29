@@ -127,11 +127,11 @@ body {
     white-space: nowrap !important;
 }
 
-/* .leaneditorContainer {
-    height: 99vh;
+.leaneditorContainer {
+    height: 90vh !important;
     display: flex;
     flex-direction: row;
-} */
+}
 .leaneditorContainerSplit{
     width:35vw;
 }
@@ -504,3 +504,40 @@ width: 90%;}
     width: 250px;
 
 }
+/* Navbar.css */
+
+/* Styling for the navigation bar */
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #333;
+    padding: 0.2rem 2rem;
+  }
+  
+  /* Styling for the logo */
+  .logo {
+    font-size: 1.5rem;
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  /* Styling for the unordered list */
+  ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  /* Styling for list items (links) */
+  li {
+    display: inline;
+  }
+  
+  /* Styling for link text */
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
