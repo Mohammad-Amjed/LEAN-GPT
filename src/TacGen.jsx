@@ -28,6 +28,7 @@ const TacGen = () => {
   const [Tactic, setTactic] = useState(undefined);
   const [Explanation, setExplanation] = useState("Explanation is Loading ...");
   const [isModal, setModal] = useState(false);
+  const [Clip, setClip] = useState("");
 
   const handleOpenModal = (t) => {
     handleExplain(t);
@@ -55,6 +56,27 @@ const handleExplain = async (t) => {
   }
 }
 
+const handleCopyToClipboard = (t) => {
+  // Create a textarea element to hold the text
+  const textArea = document.createElement('textarea');
+  textArea.value = t;
+  document.body.appendChild(textArea);
+
+  // Select the text within the textarea
+  textArea.select();
+
+  try {
+    // Attempt to copy the selected text to the clipboard
+    document.execCommand('copy');
+    console.log('Text copied to clipboard:', t);
+  } catch (err) {
+    console.error('Unable to copy text to clipboard:', err);
+  }
+
+  // Remove the textarea from the DOM
+  document.body.removeChild(textArea);
+};
+
 useEffect(()=> {console.log(text)},[text])
   return (
     <>
@@ -76,7 +98,10 @@ useEffect(()=> {console.log(text)},[text])
               {text[0][0].map((t) => (
                 <li className='tacGen_tactics_tactic' key={t}>
                   <span classNane="tacGen_tactics_tactic_span">{t}</span>
+                  <div>
+                  <button id="copy" className="tacGen_tactics_tactic_button explain" onClick={()=>handleCopyToClipboard(t)}> Copy</button>
                   <button className="tacGen_tactics_tactic_button explain" onClick={()=>handleOpenModal(t)}> Explain</button>
+                </div>
                 </li>
               ))}
             </ol>

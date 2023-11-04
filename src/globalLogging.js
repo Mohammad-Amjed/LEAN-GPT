@@ -34,3 +34,4 @@ document.addEventListener('keypress', (event) => {
   const typedKey = event.key;
   logKeyPress(typedKey);
 });
+

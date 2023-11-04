@@ -444,6 +444,7 @@ width: 90%;}
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
   }
   
   /* Style for the 'Generate a Tactic' button */
@@ -455,6 +456,7 @@ width: 90%;}
     border: none;
     border-radius: 4px;
     cursor: pointer;
+ 
   }
   
   /* Style for tactic list and tactic items */
@@ -477,11 +479,26 @@ width: 90%;}
   
   .tacGen_tactics_tactic_button {
     padding: 15px !important;
+    width: 100px;
+    margin-left:10px;
+    font-weight: bold;
     
   }
   
   .tacGen button:hover {
-    background-color: #222;
+    background-color: #f8f8f8 !important;
+    border: 1px solid #222 !important;
+    color:#222 !important;
+  }
+
+  #copy{
+    background-color: #f8f8f8 !important;
+    border: 1px solid #222 !important;
+    color: #222 !important;
+  }
+  #copy:hover{
+    background-color: #222 !important;
+    color: #f8f8f8 !important;
   }
   
 /* Add these styles to your CSS */
