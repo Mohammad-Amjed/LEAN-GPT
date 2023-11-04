@@ -71,7 +71,7 @@ useEffect(()=> {console.log(text)},[text])
             </div>
           ) : (
           <div>
-              <h3>The goal at line: {text[0][2]} is: {text[0][1]}</h3>
+              <h3>Tactic Prediction based on the state at line: {text[0][2]} </h3>
             <ol className='tacGen_tactics'>
               {text[0][0].map((t) => (
                 <li className='tacGen_tactics_tactic' key={t}>

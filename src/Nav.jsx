@@ -78,14 +78,30 @@ function Navbar() {
         aria-labelledby="modal-instructions-title"
         aria-describedby="modal-instructions-description"
       >
-        <Box sx={style}>
-          <Typography id="modal-instructions-title" variant="h6" component="h2">
-            Instructions for Peer Proover
-          </Typography>
-          <Typography id="modal-instructions-description" sx={{ mt: 2 }}>
-            Instructions for using Peer Proover go here.
-          </Typography>
-        </Box>
+<Box sx={style}>
+  <Typography id="modal-about-title" variant="h6" component="h2">
+    Inside PeerProver: A Guided Tour
+  </Typography>
+  <Typography id="modal-about-description" sx={{ mt: 2 }}>
+    <p>PeerProver is divided into two parts to streamline your theorem proving experience.</p>
+    <Typography variant="h6" component="h2">The LEAN3 Prover - Your Proving Ground:</Typography>
+    <p>The first part consists of:</p>
+    1. <strong>The Editor:</strong> Here, you'll find the space to write your code. This is where you craft the blueprint of your proof, providing the structure and logic to support your theorems.
+    <br/>
+    2. <strong>The Interpreter:</strong> The interpreter is your partner in the journey. It reveals the current state of your proof, helping you keep track of your progress and ensuring you're on the right path.
+
+    <Typography variant="h6" component="h2">Exploring the Right Half: Predict and Explain:</Typography>
+
+    <p>The right half of PeerProver is where you access vital assistance for your proofs.</p>
+
+    <p>- <strong>Predict Tactic Button:</strong> With a simple click, you can generate a list of four possible LEAN3 tactics. These tactics can serve as your guiding lights when you find yourself stuck or seeking inspiration on how to advance your proof.</p>
+
+  <p>  - <strong>Explain Button:</strong> Situated next to each tactic, the "Explain" button is your bridge to deeper understanding. It connects you to GPT-generated explanations, unraveling the intricacies of each tactic and its application in your proof.</p>
+
+  <p>PeerProver's design empowers you to seamlessly transition from building your proof to receiving targeted assistance, ensuring your journey in theorem proving is both intuitive and enlightening.</p>
+  </Typography>
+</Box>
+
       </Modal>
     </nav>
   );

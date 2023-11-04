@@ -1,0 +1,5 @@
+intros h q r,
+apply h,
+split,
+apply q,
+applty r,

@@ -10,6 +10,7 @@ import { allMessages, checkInputCompletionChange, checkInputCompletionPosition, 
   registerLeanLanguage, server, tabHandler } from './langservice';
 import useCustomState from './useCustomState.js';
 import { createStore } from "redux";
+import { logInteraction } from './loggerService';
 import rootReducer from "./redux/reducers";
 import { RootState } from "./redux/types/types.js"
 import { Provider } from "react-redux";
@@ -879,9 +880,6 @@ function App() {
 
   return (
     <div className="leanFlex">
-      <div className="GPTcontainer">
-        <TacGen />
-      </div>
       <LeanEditor
         file={fn}
         initialValue={params.code}
@@ -890,7 +888,9 @@ function App() {
         onUrlChange={(newValue) => changeUrl(newValue, 'url')}
         clearUrlParam={clearUrlParam}
       />
-
+      <div className="GPTcontainer">
+        <TacGen />
+      </div>
     </div>
   );
 }

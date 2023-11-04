@@ -75,6 +75,23 @@ def question():
         print('Error:', str(e))
         return jsonify({'error': 'An error occurred'}), 500
 
+log_directory = 'logs'
+if not os.path.exists(log_directory):
+    os.makedirs(log_directory)
+
+@app.route('/log', methods=['POST'])
+def log_interaction():
+    log_entry = request.json.get('logEntry')
+
+    # Write the log data to a file
+    with open(os.path.join(log_directory, 'interactions.log'), 'a') as log_file:
+        if log_entry == "Enter":
+            log_file.write('\n')
+        else:
+            log_file.write(log_entry)
+
+
+    return 'Logged', 200
 # Register the blueprint
 app.register_blueprint(api_bp)
 
