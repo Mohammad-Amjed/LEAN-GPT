@@ -9,7 +9,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const style = {
   position: 'absolute',
@@ -95,15 +96,19 @@ useEffect(()=> {console.log(text)},[text])
           <div>
               <h3>Tactic Prediction based on the state at line: {text[0][2]} </h3>
             <ol className='tacGen_tactics'>
-              {text[0][0].map((t) => (
-                <li className='tacGen_tactics_tactic' key={t}>
-                  <span classNane="tacGen_tactics_tactic_span">{t}</span>
-                  <div>
-                  <button id="copy" className="tacGen_tactics_tactic_button explain" onClick={()=>handleCopyToClipboard(t)}> Copy</button>
-                  <button className="tacGen_tactics_tactic_button explain" onClick={()=>handleOpenModal(t)}> Explain</button>
-                </div>
-                </li>
-              ))}
+              {text[0][0].map((t) => {
+                   const cleanText = t.replace(/<a.*?>(.*?)<\/a>/g, '$1');
+                  return (
+                    <li className='tacGen_tactics_tactic' key={cleanText}>
+                      <span className="tacGen_tactics_tactic_span">{cleanText}</span>
+                      <div>
+                        <button id="copy" className="tacGen_tactics_tactic_button explain" onClick={()=>handleCopyToClipboard(cleanText)}> <ContentCopyIcon /></button>
+                        <button className="tacGen_tactics_tactic_button explain" onClick={()=>handleOpenModal(cleanText)}> <HelpOutlineIcon /> </button>
+                      </div>
+                    </li>
+                  );
+                })
+                }
             </ol>
             </div>
           )}

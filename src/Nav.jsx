@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import logo from "../src/log.png"
 
 
 const style = {
@@ -29,7 +30,7 @@ function Navbar() {
 
   return (
     <nav>
-      <div className="logo">Peer proover</div>
+      <div className="logo"> <img src={logo} alt="Logo" /></div>
       <ul>
         <li><a href="#" onClick={handleOpenAbout}>About</a></li>
         <li><a href="#" onClick={handleOpenInstructions}>Instructions</a></li>

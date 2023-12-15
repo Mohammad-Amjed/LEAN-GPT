@@ -1,7 +1,7 @@
 body {
     margin: 0;
-    font-family: sans-serif;
-    color: #222;
+    font-family: americanTypewriter-Condensed;
+    color: #4d0d69;
 }
 
 .code-block {
@@ -32,7 +32,7 @@ body {
 }
 .modalButton {
     padding: .1em .5em;
-    color: #222;
+    color: #4d0d69;
     background: #aaf;
     border: 2px solid #ccf;
     border-radius: 1em;
@@ -110,7 +110,7 @@ body {
     width: 25px;
     height: 25px;
     fill: transparent;
-    stroke: #222;
+    stroke: #4d0d69;
     stroke-linecap: round;
     stroke-width: 2;
 }
@@ -132,7 +132,7 @@ body {
 }
 
 .leaneditorContainer {
-    height: 90vh !important;
+    height: 86vh !important;
     display: flex;
     flex-direction: row;
 }
@@ -212,7 +212,7 @@ input[type='checkbox']#collapsible  {
 .lbl-toggle {
     display: block;
     text-align: center;
-    color: #222;
+    color: #4d0d69;
     cursor: pointer;
     transition: all 0.25s ease-out;
 }
@@ -279,7 +279,7 @@ input[type='checkbox']#collapsible  {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    background: #222;
+    background: #4d0d69;
     opacity: .2;
     z-index: 1;
     -moz-background-clip: padding;
@@ -324,6 +324,7 @@ input[type='checkbox']#collapsible  {
     border-top: 1px solid gray;
 }
 
+
 .Pane.vertical.Pane2 {
     border-left: 1px solid gray;
 }
@@ -335,8 +336,8 @@ h1 {
     flex-direction: column;
     /* align-items: center; */
     font-size: 40px;
-    color: #f8f8f8;
-    background-color: #222;
+    color: #d1b6dd;
+    background-color: #4d0d69;
     min-height: 45vh;
     max-height: 45vh;
     overflow-y: scroll;
@@ -354,7 +355,7 @@ h1 {
     background-color: #f1f1f1;
     border-radius: 5px;
     padding: 10px;
-    height: 90vh;
+    height: 86vh;
     overflow: scroll;
   }
   
@@ -362,7 +363,7 @@ h1 {
     /* list-style-type: decimal;  */
     /* margin: 0;
     padding: 0;
-    color: #333;  */
+    color: #4d0d69;  */
   }
   
   .app_textarea_line {
@@ -427,7 +428,7 @@ width: 90%;}
   }
 
   .leanFlex {
-    height: 90vh;
+    height: 86vh;
     display: flex;
     flex-direction: row;
   }
@@ -439,7 +440,7 @@ width: 90%;}
   /* Style for the TacGen component container */
   .tacGen {
     height: calc(100% - 30px);
-    background-color: #f8f8f8;
+    background-color: #d1b6dd;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -451,7 +452,7 @@ width: 90%;}
   .tacGen button {
     margin-bottom: 10px;
     padding: 20px;
-    background-color: #222;
+    background-color: #4d0d69;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -463,6 +464,7 @@ width: 90%;}
   .tacGen_tactics {
     list-style: none;
     padding: 0;
+    font-family: sans-serif;
   }
   
   .tacGen_tactics_tactic {
@@ -486,19 +488,19 @@ width: 90%;}
   }
   
   .tacGen button:hover {
-    background-color: #f8f8f8 !important;
-    border: 1px solid #222 !important;
-    color:#222 !important;
+    background-color: #d1b6dd !important;
+    border: 1px solid #4d0d69 !important;
+    color:#4d0d69 !important;
   }
 
   #copy{
-    background-color: #f8f8f8 !important;
-    border: 1px solid #222 !important;
-    color: #222 !important;
+    background-color: #d1b6dd !important;
+    border: 1px solid #4d0d69 !important;
+    color: #4d0d69 !important;
   }
   #copy:hover{
-    background-color: #222 !important;
-    color: #f8f8f8 !important;
+    background-color: #4d0d69 !important;
+    color: #d1b6dd !important;
   }
   
 /* Add these styles to your CSS */
@@ -513,13 +515,14 @@ width: 90%;}
   
   .loading-text {
     margin-top: 20px !important; /* Adjust the font size */
+    font-family: sans-serif;
   }
   
   .tacGen_submit__regen{
     position: absolute;
-    background-color: #f8f8f8 !important;
+    background-color: #d1b6dd !important;
     bottom: 320px;
-    color: #222 !important;
+    color: #4d0d69 !important;
     left: 900px;
     width: 250px;
 
@@ -530,17 +533,21 @@ width: 90%;}
 nav {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    background-color: #333;
-    padding: 0.2rem 2rem;
-    height:7vh;
+    background-color: #4d0d69;
+    padding: 0.4rem 2rem 0rem 2rem;
+    height:12vh;
+    font-size: 1.3rem;
   }
   
   /* Styling for the logo */
   .logo {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     color: #fff;
     text-decoration: none;
+  }
+
+  .logo img {
+    height: 90px;
   }
   
   /* Styling for the unordered list */
@@ -549,6 +556,7 @@ nav {
     padding: 0;
     display: flex;
     gap: 1rem;
+    margin-left:20px;
   }
   
   /* Styling for list items (links) */

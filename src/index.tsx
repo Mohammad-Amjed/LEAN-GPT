@@ -880,6 +880,9 @@ function App() {
 
   return (
     <div className="leanFlex">
+      <div className="GPTcontainer">
+        <TacGen />
+      </div>
       <LeanEditor
         file={fn}
         initialValue={params.code}
@@ -888,9 +891,6 @@ function App() {
         onUrlChange={(newValue) => changeUrl(newValue, 'url')}
         clearUrlParam={clearUrlParam}
       />
-      <div className="GPTcontainer">
-        <TacGen />
-      </div>
     </div>
   );
 }
