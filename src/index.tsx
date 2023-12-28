@@ -16,9 +16,14 @@ import { RootState } from "./redux/types/types.js"
 import { Provider } from "react-redux";
 import { connect } from "react-redux";
 import allActions from "./redux/actions";
-import TacGen from './TacGen.jsx';
+// import TacGen from './TacGen.jsx';
 import Nav from "./Nav.jsx"
+interface TacGenProps {
+  tactics: any[];
+  predict: any;
+}
 
+const TacGen: React.ComponentType<TacGenProps> = require('./TacGen.jsx').default;
 export const SplitPane: any = sp;
 // console.log("please do not work");
 function leanColorize(text: string): string {
@@ -116,68 +121,110 @@ enum DisplayMode {
   OnlyState, // only the state at the current cursor position including the tactic state
   AllMessage, // all messages
 }
+// Define the type for your props
+interface InfoViewProps {
+  file: string;
+  cursor: Position; // Define the Position type as per your application's requirements
+  isPredicting?: boolean;
+  dispatch?: Function; // Specify more accurate type if available
+  goalState: any;
+  generatedTactics: (tactics: any[]) => void;
+  toggle: any;
+}
 
-const InfoView = ({ file, cursor }) => {
-  const [goal, setGoal] = useState(null);
-  const [res, setRes] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [displayMode, setDisplayMode] = useState(DisplayMode.OnlyState);
-  const [tactics, setTactics] = useState([]);
-  const dispatch = useDispatch();
-  const isPredicting = useSelector((state: RootState) => state.bool.value);
-  useEffect(() => {
-    updateMessages();
-    const timer = setTimeout(() => {
-      updateMessages();
-      refreshGoal();
+// Define the type for your component's state
+interface InfoViewClassState {
+  goal: any; // Replace 'any' with a more specific type if available
+  res: any; // Same here
+  messages: Message[]; // Assuming 'Message' is a defined type
+  displayMode: DisplayMode; // Ensure DisplayMode is properly defined/imported
+  tactics: any[]; // Same here
+  localToggle: boolean,
+}
+
+class InfoViewClass extends React.Component<InfoViewProps, InfoViewClassState> {
+  private subscription: ReturnType<typeof server.allMessages.on>; // Adjust the type based on your actual subscription return type
+  private timer: ReturnType<typeof setTimeout>;
+  constructor(props: InfoViewProps) {
+    super(props);
+    this.state = {
+      goal: null,
+      res: null,
+      messages: [],
+      displayMode: DisplayMode.OnlyState,
+      tactics: [],
+      localToggle: this.props.toggle,
+    };
+  }
+
+  
+  componentDidMount() {
+    this.updateMessages();
+    this.timer = setTimeout(() => {
+      this.updateMessages();
+      this.refreshGoal();
     }, 100);
-    return () => clearTimeout(timer);
-  }, [file]);
 
-  useEffect(() => {
-    const subscription = server.allMessages.on((allMsgs) => {
-      const timer = setTimeout(() => {
-        updateMessages();
-        refreshGoal();
+    this.subscription = server.allMessages.on((allMsgs) => {
+      this.timer = setTimeout(() => {
+        this.updateMessages();
+        this.refreshGoal();
       }, 100);
-      return () => clearTimeout(timer);
     });
+  }
 
-    return () => subscription.dispose();
-  }, []);
-
-  useEffect(() => {
-    if (cursor) {
-      updateMessages();
-      refreshGoal();
+  componentDidUpdate(prevProps,prevState) {
+    if (this.props.cursor !== prevProps.cursor) {
+      this.updateMessages();
+      this.refreshGoal();
     }
-  }, [cursor]);
 
-  useEffect(() => {
-    console.log(isPredicting);
-    if (goal && isPredicting) {
-      generateTactic().then(()=>{dispatch(allActions.updateTacticPrediction(false)); });
+    // if (this.state.goal) {
+    //   this.generateTactic().then(() => {
+    //     this.props.dispatch(allActions.updateTacticPrediction(false));
+    //   });
+    // }
+    if (this.props.toggle !== prevProps.toggle) {
+      this.setState({ localToggle: true });
     }
-  }, [goal, isPredicting]);
 
-  const updateMessages = () => {
-    setMessages(allMessages.filter((v) => v.file_name === file));
+    if (this.state.goal && this.state.localToggle) {
+      console.log(this.state.localToggle);
+      this.generateTactic();
+      // Reset the localToggle state to false after calling generateTactic
+      this.setState({ localToggle: false });
+    }
+
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+    this.subscription.dispose();
+  }
+
+  updateMessages = () => {
+    this.setState({
+      messages: allMessages.filter((v) => v.file_name === this.props.file)
+    });
   };
 
-  const refreshGoal = () => {
-    if (!cursor) {
+  refreshGoal = () => {
+    if (!this.props.cursor) {
       return;
     }
 
-    const position = cursor;
-    server.info(file, position.line, position.column).then((res) => {
-      setGoal(res.record && { goal: res.record, position });
+    const position = this.props.cursor;
+    server.info(this.props.file, position.line, position.column).then((res) => {
+      this.setState({
+        goal: res.record && { goal: res.record, position }
+      });
+      this.props.goalState(this.state.goal.goal.state)
     });
   };
 
-  const generateTactic = async () => {
+  generateTactic = async () => {
     const url = 'http://127.0.0.1:3000/api/generate_tactics';
-    const proofState = goal.goal.state;
+    const proofState = this.state.goal.goal.state;
     const data = { proof_state: proofState };
 
     try {
@@ -195,59 +242,51 @@ const InfoView = ({ file, cursor }) => {
 
       const responseData = await response.json();
       const tacticCandidates = responseData.tactics;
-      setTactics(tacticCandidates);
-      dispatch(allActions.textAction.clearText());
-      dispatch(allActions.textAction.setText([tacticCandidates,proofState,cursor.line]));
+      this.setState({ tactics: tacticCandidates });
+      this.props.generatedTactics(this.state.tactics);
+      this.props.dispatch(allActions.textAction.clearText());
+      this.props.dispatch(allActions.textAction.setText([tacticCandidates, proofState, this.props.cursor.line]));
     } catch (error) {
       console.error('Error:', error);
-      setTactics([]);
+      this.setState({ tactics: [] });
     }
   };
 
-  const filteredMsgs = displayMode === DisplayMode.AllMessage
-    ? messages
-    : messages.filter(({ pos_col, pos_line, end_pos_col, end_pos_line }) => {
-        if (!cursor) {
-          return false;
-        }
-        const { line, column } = cursor;
-        return (
-          pos_line <= line &&
-          (!end_pos_line || line === pos_line || line <= end_pos_line) &&
-          (line !== pos_line || pos_col <= column) &&
-          (line !== end_pos_line || end_pos_col >= column)
-        );
-      });
+  render() {
+    const { goal, messages, displayMode } = this.state;
+    const { cursor } = this.props;
 
-  return (
-    <div style={{ overflow: 'auto', height: '100%' }}>
-      <div className='infoview-buttons'>
-        <img
-          src='./display-goal-light.svg'
-          title='Display Goal'
-          style={{ opacity: displayMode === DisplayMode.OnlyState ? 1 : 0.25 }}
-          onClick={() => {
-            setDisplayMode(DisplayMode.OnlyState);
-          }}
-        />
-        <img
-          src='./display-list-light.svg'
-          title='Display Messages'
-          style={{ opacity: displayMode === DisplayMode.AllMessage ? 1 : 0.25 }}
-          onClick={() => {
-            setDisplayMode(DisplayMode.AllMessage);
-          }}
-        />
+    const filteredMsgs = displayMode === DisplayMode.AllMessage
+      ? messages
+      : messages.filter(({ pos_col, pos_line, end_pos_col, end_pos_line }) => {
+          if (!cursor) {
+            return false;
+          }
+          const { line, column } = cursor;
+          return (
+            pos_line <= line &&
+            (!end_pos_line || line === pos_line || line <= end_pos_line) &&
+            (line !== pos_line || pos_col <= column) &&
+            (line !== end_pos_line || end_pos_col >= column)
+          );
+        });
+
+    return (
+      <div style={{ overflow: 'auto', height: '100%' }}>
+        <div className='infoview-buttons'>
+          {/* Buttons for toggling display mode */}
+        </div>
+        {displayMode === DisplayMode.OnlyState && goal && (
+          <div key={'goal'}>{GoalWidget(goal)}</div>
+        )}
+        {filteredMsgs.map((msg, i) => (
+          <div key={i}>{MessageWidget({ msg })}</div>
+        ))}
       </div>
-      {displayMode === DisplayMode.OnlyState && goal && (
-        <div key={'goal'}>{GoalWidget(goal)}</div>
-      )}
-      {filteredMsgs.map((msg, i) => (
-        <div key={i}>{MessageWidget({ msg })}</div>
-      ))}
-    </div>
-  );
-};
+    );
+  }
+}
+
 
 
 interface PageHeaderProps {
@@ -613,6 +652,8 @@ interface LeanEditorProps {
   initialUrl: string;
   onUrlChange?: (value: string) => void;
   clearUrlParam: () => void;
+  generatedTactics: (tactics: any[]) => void;
+  toggle: any;
 }
 interface LeanEditorState {
   cursor?: Position;
@@ -622,6 +663,9 @@ interface LeanEditorState {
   size: number;
   checked: boolean;
   lastFileName: string;
+  tactics: [],
+  goal: any;
+
 }
 class LeanEditor extends React.Component<LeanEditorProps, LeanEditorState> {
   // handleGptcomInfo = (info) => {
@@ -640,6 +684,8 @@ class LeanEditor extends React.Component<LeanEditorProps, LeanEditorState> {
       size: null,
       checked: true,
       lastFileName: this.props.file,
+      tactics: [],
+      goal : null, 
     };
     this.model = monaco.editor.createModel(this.props.initialValue, 'lean', monaco.Uri.file(this.props.file));
     this.model.updateOptions({ tabSize: 2 });
@@ -758,7 +804,16 @@ class LeanEditor extends React.Component<LeanEditorProps, LeanEditorState> {
   onChecked() {
     this.setState({ checked: !this.state.checked });
   }
-
+  goalState = (state) => {
+    console.log("-----------------------------------------------------------");
+      console.log(state);
+      this.setState({ goal: state });
+      
+  }
+  // generatedTactics = (tactics) =>{
+  //   console.log(tactics);
+  //   this.setState({tactics : tactics})
+  // }
   render() {
     const infoStyle = {
       height: (this.state.size && (this.state.split === 'horizontal')) ?
@@ -785,7 +840,7 @@ class LeanEditor extends React.Component<LeanEditorProps, LeanEditorState> {
         onDragFinished={this.dragFinished}>
           <div ref='monaco' className='monacoContainer'/>
           <div className='infoContainer' style={infoStyle}>
-            <InfoView  file={this.props.file} cursor={this.state.cursor}/>
+            <InfoViewClass  file={this.props.file} cursor={this.state.cursor} goalState={this.goalState} generatedTactics={this.props.generatedTactics} toggle={this.props.toggle}/>
           </div>
         </SplitPane>
       </div>
@@ -828,9 +883,12 @@ function paramsToString(params: HashParams): string {
 //   console.log(codeurl)
 //   history.replaceState(undefined, undefined,codeurl);
 // }
+
 function App() {
   const initUrl = new URL(window.location.href);
   const params = parseHash(initUrl.hash);
+  const [tactics, setTactics] = useState([]);
+  const [toggle, setToggle] = useState(false);
 
   function changeUrl(newValue, key) {
     params[key] = newValue;
@@ -877,6 +935,11 @@ function App() {
     style.appendChild(document.createTextNode(`.toggleDoc, .doc-header { display:none; }`));
     document.head.appendChild(style);
   }
+  const generatedTactics = (tactics) => {
+    console.log("***********^^^^^^^^^^^^^^^^^&&&&&&&&&&&&&################")
+    console.log(tactics);
+    setTactics(tactics);
+  };  
 
   return (
     <div className="leanFlex">
@@ -887,9 +950,11 @@ function App() {
         initialUrl={params.url}
         onUrlChange={(newValue) => changeUrl(newValue, 'url')}
         clearUrlParam={clearUrlParam}
+        generatedTactics={generatedTactics}
+        toggle={toggle}
       />
       <div className="GPTcontainer">
-        <TacGen />
+      <TacGen tactics={tactics as any[]} predict={()=>setToggle(!toggle)} />
       </div>
     </div>
   );
