@@ -7,7 +7,10 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-
+import Nav from "./Nav.jsx"
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import DoneIcon from '@mui/icons-material/Done';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -26,6 +29,8 @@ const TacGen = ({ tactics = [], ...props }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const[predictedTactics, setPredictedTactics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [copied, setCopied] = useState([0,0,0,0]);
+  const [buttonstyle, setButtonstyle] = useState(['tacGen_submit__gen' , 'tacGen_submit']);
   const dispatch = useDispatch();
   const text = useSelector((state) => state.text.value);
 
@@ -38,6 +43,7 @@ const TacGen = ({ tactics = [], ...props }) => {
   const handleCloseModal = () => setIsModalOpen(false);
 
   const handleClick = () => {
+    setButtonstyle(['tacGen_button_onclick' , 'tacGen_submit_onclick']);
     props.predict();
     setIsLoading(true); 
     setShowTactic(true);
@@ -59,9 +65,16 @@ const TacGen = ({ tactics = [], ...props }) => {
     }
   };
 
-  const handleCopyToClipboard = (text) => {
+  const handleCopyToClipboard = (text,index) => {
     navigator.clipboard.writeText(text)
-      .then(() => console.log('Text copied to clipboard:', text))
+      .then(() => {
+        console.log('Text copied to clipboard:', text);
+        setCopied(prevCopied => {
+          const newCopied = prevCopied.map((_, idx) => idx === index ? 1 : 0);
+          return newCopied;
+        });
+    }
+      )
       .catch(err => console.error('Unable to copy text to clipboard:', err));
   };
 
@@ -73,12 +86,14 @@ const TacGen = ({ tactics = [], ...props }) => {
     }
   }, [tactics]);
   
-
   return (
     <>
       <div className='tacGen'>
+      <Nav />
+      <div className={buttonstyle[1]}>
+          <Button className={buttonstyle[0]} onClick={handleClick}>Predict Tactics</Button>
+        </div>
         <div>
-          <h1>Predict Tactics</h1>
           {showTactic && (
             <div>
               {isLoading  ? (
@@ -88,25 +103,24 @@ const TacGen = ({ tactics = [], ...props }) => {
                 </div>
               ) : (
                 <div>
-                  <h3>Tactic Prediction based on the state at line: {predictedTactics[2]} </h3>
                   <ol className='tacGen_tactics'>
-                    {predictedTactics.map((tactic, index) => (
+                    {predictedTactics.map((tactic, index) => {
+                      const cleanText = tactic.replace(/<a.*?>(.*?)<\/a>/g, '$1');
+                      return(
                       <li className='tacGen_tactics_tactic' key={index}>
-                        <span className="tacGen_tactics_tactic_span">{tactic}</span>
-                        <div>
-                          <Button className="tacGen_tactics_tactic_button explain" onClick={() => handleCopyToClipboard(tactic)}>Copy</Button>
-                          <Button className="tacGen_tactics_tactic_button explain" onClick={() => handleOpenModal(tactic)}>Explain</Button>
+                        <span className="tacGen_tactics_tactic_span">{cleanText}</span>
+                        <div className="tacGen_tactic_buttons">
+                          <button id="copy" className="tacGen_tactics_tactic_button explain" onClick={() => handleCopyToClipboard(cleanText,index)}>{ !copied[index] ? <ContentCopyIcon />: <DoneIcon /> }</button>
+                          <button id="explain" className="tacGen_tactics_tactic_button explain" onClick={() => handleOpenModal(cleanText)}><HelpOutlineIcon /> </button>
                         </div>
                       </li>
-                    ))}
+                      
+                  )})}
                   </ol>
                 </div>
               )}
             </div>
           )}
-        </div>
-        <div className='tacGen_submit'>
-          <Button className='tacGen_submit__gen' onClick={handleClick}>Predict Tactics</Button>
         </div>
       </div>
 

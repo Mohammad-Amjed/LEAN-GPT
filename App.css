@@ -1,7 +1,7 @@
 body {
     margin: 0;
-    font-family: sans-serif;
-    color: #222;
+    font-family: arial;
+    color: #202123;
 }
 
 .code-block {
@@ -27,12 +27,12 @@ body {
     font-size: 80%;
 }
 .GPTcontainer {
-    width:50vw;
+    width:20vw;
     height: 100%;
 }
 .modalButton {
     padding: .1em .5em;
-    color: #222;
+    color: #4d0d69;
     background: #aaf;
     border: 2px solid #ccf;
     border-radius: 1em;
@@ -110,7 +110,7 @@ body {
     width: 25px;
     height: 25px;
     fill: transparent;
-    stroke: #222;
+    stroke: #4d0d69;
     stroke-linecap: round;
     stroke-width: 2;
 }
@@ -132,12 +132,12 @@ body {
 }
 
 .leaneditorContainer {
-    height: 90vh !important;
+    height: 100vh !important;
     display: flex;
     flex-direction: row;
 }
 .leaneditorContainerSplit{
-    width:50vw;
+    width:80vw;
 }
 
 .leanheader {
@@ -212,7 +212,7 @@ input[type='checkbox']#collapsible  {
 .lbl-toggle {
     display: block;
     text-align: center;
-    color: #222;
+    color: #4d0d69;
     cursor: pointer;
     transition: all 0.25s ease-out;
 }
@@ -279,7 +279,7 @@ input[type='checkbox']#collapsible  {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    background: #222;
+    background: #4d0d69;
     opacity: .2;
     z-index: 1;
     -moz-background-clip: padding;
@@ -324,6 +324,7 @@ input[type='checkbox']#collapsible  {
     border-top: 1px solid gray;
 }
 
+
 .Pane.vertical.Pane2 {
     border-left: 1px solid gray;
 }
@@ -335,8 +336,8 @@ h1 {
     flex-direction: column;
     /* align-items: center; */
     font-size: 40px;
-    color: #f8f8f8;
-    background-color: #222;
+    color: #d1b6dd;
+    /* background-color: #4d0d69; */
     min-height: 45vh;
     max-height: 45vh;
     overflow-y: scroll;
@@ -354,7 +355,7 @@ h1 {
     background-color: #f1f1f1;
     border-radius: 5px;
     padding: 10px;
-    height: 90vh;
+    height: 86vh;
     overflow: scroll;
   }
   
@@ -362,7 +363,7 @@ h1 {
     /* list-style-type: decimal;  */
     /* margin: 0;
     padding: 0;
-    color: #333;  */
+    color: #4d0d69;  */
   }
   
   .app_textarea_line {
@@ -427,7 +428,7 @@ width: 90%;}
   }
 
   .leanFlex {
-    height: 90vh;
+    height: 100vh;
     display: flex;
     flex-direction: row;
   }
@@ -436,129 +437,200 @@ width: 90%;}
   /* Style for the whole page (assuming the body or a container element) */
 
   
-  /* Style for the TacGen component container */
-  .tacGen {
-    height: calc(100% - 30px);
-    background-color: #f8f8f8;
-    padding: 20px;
+/* Style for the TacGen component container */
+.tacGen {
+    height: calc(100%);
+    background-color: #000;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-
-  }
-  
-  /* Style for the 'Generate a Tactic' button */
-  .tacGen button {
-    margin-bottom: 10px;
-    padding: 20px;
-    background-color: #222;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
- 
   }
   
   /* Style for tactic list and tactic items */
   .tacGen_tactics {
     list-style: none;
     padding: 0;
+    font-family: sans-serif;
+    color:#fff;
+    margin:10px;
+    margin-top: 50px;
+
   }
   
   .tacGen_tactics_tactic {
+    position:relative;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding: 10px 0;
-  }
+    border: 1px solid #ddd;
+    margin: 10px 0;
+    height: 10vh;
+    font-size: 0.9rem;
+    background-color: #202123;
+    border-radius: 10px;
+    padding: 0 10px;
+}
   
   .tacGen_tactics_tactic_span {
     font-weight: bold;
   }
+  .tacGen_tactic_buttons { 
+    position: absolute;
+    display: none;
+
+  }
+
+  .tacGen_tactics_tactic:hover .tacGen_tactic_buttons {
+    display: flex;
+    width: 100%;
+    /* other styling as needed for flex layout */
+  }
   
   .tacGen_tactics_tactic_button {
     padding: 15px !important;
-    width: 100px;
-    margin-left:10px;
+    width: 100%;
+    height: 82.3px;
     font-weight: bold;
-    
   }
   
   .tacGen button:hover {
-    background-color: #f8f8f8 !important;
-    border: 1px solid #222 !important;
-    color:#222 !important;
+    background-color: #00b894 !important;
+    /* border: 1px solid #4d0d69 !important; */
+    color: #fff !important;
   }
 
-  #copy{
-    background-color: #f8f8f8 !important;
-    border: 1px solid #222 !important;
-    color: #222 !important;
-  }
+   #copy{
+    border-radius: 10px 0 0 10px;
+  } 
   #copy:hover{
-    background-color: #222 !important;
-    color: #f8f8f8 !important;
+    background-color: #00b894 !important;
+    color: #fff !important;
   }
-  
-/* Add these styles to your CSS */
 
-.loading-spinner {
+  #explain {
+    border-radius: 0 10px 10px 0;
+  }
+  /* Loading spinner and text */
+  .loading-spinner {
     display: flex;
     padding-top: 100px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    color: #fff;
+
   }
-  
+  .css-z01bqi {
+    color: #00b894 !important;
+  }
   .loading-text {
-    margin-top: 20px !important; /* Adjust the font size */
+    margin-top: 20px;
+    font-family: sans-serif;
   }
   
-  .tacGen_submit__regen{
+  /* Style for the submit section in TacGen component */
+  .tacGen_submit {
+    height: calc(100% - 219px);
+    margin: 5px;
+  }
+  
+  .tacGen_submit__gen {
+    background-color: #00b894 !important;
+    width: 100%;
+    color: #fff !important;
+    height: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 20px;
+    border: none;
+    border-radius: 10px !important;
+    cursor: pointer;
+    font-weight: bold !important;
+    text-transform: uppercase;
+    font-size: 1.5rem !important;
+    margin-top: 10px;
+  }
+  
+  .tacGen_submit__gen:hover {
+    color: #fff;
+    background-color: #000;
+  }
+  
+  .tacGen_submit__regen {
     position: absolute;
-    background-color: #f8f8f8 !important;
+    background-color: #202123;
     bottom: 320px;
-    color: #222 !important;
+    color: #4d0d69;
     left: 900px;
     width: 250px;
-
+  }
+  
+  .tacGen_button_onclick {
+    background-color: #00b894 !important;
+    width: 100%;
+    color: #fff !important;
+    height: 100%;
+    border-radius: 10px !important;
+    margin-bottom: 0 !important;
+    padding: 20px !important;
+    border: none !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    font-size: 16px !important;
+    margin-top: 0 !important;
 }
-/* Navbar.css */
 
-/* Styling for the navigation bar */
-nav {
+.tacGen_submit_onclick {
+    height: 58.5px;
+    margin: 0 10px;
+}
+
+
+
+
+  /* Navbar styles */
+  nav {
+    align-items: center;
+    background-color: #000;
+  }
+  
+  .logocontainter {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    background-color: #333;
-    padding: 0.2rem 2rem;
-    height:7vh;
   }
   
-  /* Styling for the logo */
   .logo {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     color: #fff;
     text-decoration: none;
   }
   
-  /* Styling for the unordered list */
-  ul {
-    list-style-type: none;
+  .logo img {
+    height: 50px;
+    border-radius: 50%;
+    margin-top: 7px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  
+  .menu {
     padding: 0;
-    display: flex;
-    gap: 1rem;
+    margin-top: 20px;
+    text-align: center;
+    text-transform: uppercase;
   }
   
-  /* Styling for list items (links) */
-  li {
-    display: inline;
-  }
-  
-  /* Styling for link text */
-  a {
+  .menu a {
     color: #fff;
     text-decoration: none;
+    background-color: #202123;
+    padding: 20px 20px;
+    display: block;
+    border-radius: 10px;
+    margin: 10px;
+    font-weight: bold;
+    opacity: 0;
+    pointer-events: none; /* Prevents clicking */
   }
   

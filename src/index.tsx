@@ -17,7 +17,7 @@ import { Provider } from "react-redux";
 import { connect } from "react-redux";
 import allActions from "./redux/actions";
 // import TacGen from './TacGen.jsx';
-import Nav from "./Nav.jsx"
+
 interface TacGenProps {
   tactics: any[];
   predict: any;
@@ -850,7 +850,21 @@ class LeanEditor extends React.Component<LeanEditorProps, LeanEditorState> {
 }
 
 const defaultValue =
-``;
+`lemma maze (P Q R S T U: Prop)
+(p : P)
+(h : P → Q)
+(i : Q → R)
+(j : Q → T)
+(k : S → T)
+(l : T → U)
+: U :=
+begin
+apply l,
+apply j,
+apply h,
+exact p,
+end
+`;
 
 interface HashParams {
   url: string;
@@ -943,6 +957,9 @@ function App() {
 
   return (
     <div className="leanFlex">
+      <div className="GPTcontainer">
+      <TacGen tactics={tactics as any[]} predict={()=>setToggle(!toggle)} />
+      </div>
       <LeanEditor
         file={fn}
         initialValue={params.code}
@@ -953,9 +970,7 @@ function App() {
         generatedTactics={generatedTactics}
         toggle={toggle}
       />
-      <div className="GPTcontainer">
-      <TacGen tactics={tactics as any[]} predict={()=>setToggle(!toggle)} />
-      </div>
+
     </div>
   );
 }
@@ -984,7 +999,6 @@ const store = createStore(rootReducer);
   registerLeanLanguage(leanJsOpts);
   render(
     <Provider store={store}>
-      <Nav />
       <App />
     </Provider>,
       document.getElementById('root'),

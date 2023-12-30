@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-
+import logo from "../src/logo.png"
 
 const style = {
   position: 'absolute',
@@ -29,12 +29,14 @@ function Navbar() {
 
   return (
     <nav>
-      <div className="logo">Peer proover</div>
-      <ul>
-        <li><a href="#" onClick={handleOpenAbout}>About</a></li>
-        <li><a href="#" onClick={handleOpenInstructions}>Instructions</a></li>
-        {/* Add more navigation links here */}
-      </ul>
+      <div className="logocontainter">
+       <div className="logo"> <img src={logo} alt="Logo" /></div>
+      <div className="logo">Prover Place</div>
+      </div>
+      <div className="menu">
+        <a href="#" onClick={handleOpenAbout}>About</a>
+        <a href="#" onClick={handleOpenInstructions}>Instructions</a>
+      </div>
 
       {/* About Modal */}
       <Modal
@@ -44,7 +46,7 @@ function Navbar() {
         aria-describedby="modal-about-description"
       >
 <Box sx={style}>
-  <ul>
+  <ul className='aboutModal'>
     <li>
   <Typography id="modal-about-title" variant="h6" component="h2">
     Our Story
